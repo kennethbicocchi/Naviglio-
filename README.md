@@ -1,7 +1,7 @@
 # Naviglio
 
 <p align="center">
-  <img src="assets/banner.png" alt="Naviglio Banner" width="440" height="280"/>
+  <img src="naviglio_banner_eng.png" alt="Naviglio Banner" width="440" height="280"/>
 </p>
 
 <p align="center">
