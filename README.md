@@ -48,4 +48,8 @@ You can test it locally in **Developer Mode**:
 
 5. Select the extension/ folder from this repo
 
-Default Password "Naviglio"
+6. Default Password "Naviglio"
+
+<p align="center">
+  <img src="naviglio_banner3_eng.png" alt="Naviglio Banner" width="1280" height="800"/>
+</p>
