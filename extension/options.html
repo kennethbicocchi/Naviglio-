@@ -1,85 +1,59 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Naviglio – Opzioni</title>
-  <link rel="stylesheet" href="interstitial.css">
-  <style>
-    body { background:#0f1115; color:#e6e8ec; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; }
-    .wrap { max-width: 780px; margin: 40px auto; padding: 24px; background:#121520; border-radius: 16px; box-shadow: 0 0 0 1px #1c2230;}
-    h1 { font-size: 22px; margin: 0 0 16px; }
-    .card { background:#151a26; border-radius: 12px; padding:16px; margin:16px 0; box-shadow: inset 0 0 0 1px #1f2635;}
-
-    /* ROW: l'input prende spazio, i bottoni non comprimono */
-    .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-
-    /* Campi comodi e alti */
-    input[type="text"], input[type="password"], select {
-      background:#0d111a; border:1px solid #2a3248; border-radius:8px; color:#e6e8ec;
-      padding:10px 12px; line-height:1.2; height:40px; font-size:14px;
-    }
-
-    /* L'input domini ha priorità di larghezza */
-    #domainInput { flex: 1 1 420px; min-width: 260px; }
-
-    /* Gli altri campi non si allargano */
-    #unlockMins, button { flex: 0 0 auto; height:40px; }
-
-    button { background:#3b82f6; color:white; border:0; border-radius:8px; padding:0 14px; cursor:pointer; }
-    button.secondary { background:#273048; }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-
-    ul { list-style:none; padding:0; margin:0; }
-    li { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #20283a;}
-    li:last-child{ border-bottom:0; }
-    .right { display:flex; gap:8px; }
-    .msg { margin-top:8px; font-size:13px; }
-    .ok { color:#34d399; }
-    .err{ color:#f87171; }
-    .muted{ color:#94a3b8; }
-
-    .locked .edit-only { display:none; }
-    .lockBadge { display:inline-block; font-size:12px; padding:2px 8px; border-radius:999px; background:#1f2637; color:#94a3b8; margin-left:8px;}
-
-    /* Mobile: impila ordinato */
-    @media (max-width: 560px){
-      #domainInput { flex-basis:100%; }
-    }
-  </style>
+<meta charset="utf-8">
+<title>Naviglio Settings</title>
+<link rel="stylesheet" href="interstitial.css">
+<style>
+  body{max-width:720px;margin:24px auto}
+  .card{background:#161a22;border-radius:16px;padding:16px;margin-bottom:16px}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  input,select{background:#0f1115;color:#e7e7e7;border:1px solid #2a2f3a;border-radius:10px;padding:10px;flex:1}
+  button{background:#3b82f6;color:#fff;border:0;border-radius:10px;padding:10px 14px;cursor:pointer}
+  small.muted{opacity:.7}
+  ul{margin-top:8px}
+</style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Impostazioni Naviglio <span id="lockBadge" class="lockBadge">bloccate</span></h1>
+  <h2>Naviglio Settings <small class="muted" id="lockStatus">(locked)</small></h2>
 
-  <!-- Sezione sblocco -->
   <div class="card">
-    <h3>Sblocco impostazioni</h3>
+    <h3>Temporarily unlock settings</h3>
     <div class="row">
-      <input id="adminPwd" type="password" placeholder="Password genitore">
-      <select id="unlockMins" style="width:160px">
-        <option value="10">10 minuti</option>
-        <option value="30">30 minuti</option>
-        <option value="60">60 minuti</option>
+      <input id="pwd" type="password" placeholder="Parent password">
+      <select id="minutes">
+        <option value="5">5 min</option>
+        <option value="10" selected>10 min</option>
+        <option value="15">15 min</option>
+        <option value="30">30 min</option>
       </select>
-      <button id="btnUnlock">Sblocca</button>
+      <button id="btnUnlock">Unlock</button>
     </div>
-    <div id="msgAuth" class="msg muted"></div>
+    <div id="msgUnlock" class="muted" style="margin-top:8px"></div>
   </div>
 
-  <!-- Sezione domini -->
-  <div id="domainsCard" class="card locked">
-    <h3>Lista domini bloccati</h3>
+  <div class="card">
+    <h3>Change parent password</h3>
     <div class="row">
-      <input id="domainInput" type="text" placeholder="es. instagram.com">
-      <button id="btnAddDomain" class="edit-only">Aggiungi</button>
-      <button id="btnReloadDomains">Ricarica lista</button>
-      <button id="btnSaveDomains" class="edit-only">Salva</button>
+      <input id="oldPwd" type="password" placeholder="Current password">
+      <input id="newPwd1" type="password" placeholder="New password">
+      <input id="newPwd2" type="password" placeholder="Repeat new password">
+      <button id="btnChangePwd">Change</button>
     </div>
-    <div id="msgDom" class="msg muted"></div>
-    <ul id="domainsList"></ul>
+    <div id="msgPwd" class="muted" style="margin-top:8px"></div>
   </div>
 
-</div>
+  <div class="card">
+    <h3>Blocked domains</h3>
+    <div class="row">
+      <input id="domainInput" type="text" placeholder="e.g. instagram.com">
+      <button id="btnAdd">Add</button>
+      <button id="btnReload">Reload list</button>
+      <button id="btnSave">Save</button>
+    </div>
+    <ul id="list"></ul>
+    <div id="msgList" class="muted" style="margin-top:8px"></div>
+  </div>
 
 <script src="options.js"></script>
 </body>
