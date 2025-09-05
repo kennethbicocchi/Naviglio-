@@ -1,15 +1,35 @@
-// bg.js — proxy unico per Native Messaging
+// Minimal bridge: content/popup/options -> native host
 const HOST = "com.naviglio.host";
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message && message.type === "native" && message.msg) {
-    chrome.runtime.sendNativeMessage(HOST, message.msg, (resp) => {
-      if (chrome.runtime.lastError) {
-        sendResponse({ ok: false, err: chrome.runtime.lastError.message });
-      } else {
-        sendResponse(resp);
+function sendNative(msg) {
+  return new Promise((resolve) => {
+    try {
+      chrome.runtime.sendNativeMessage(HOST, msg, (resp) => {
+        const err = chrome.runtime.lastError?.message || null;
+        if (err) resolve({ ok: false, err });
+        else resolve(resp ?? { ok: false, err: "no_response" });
+      });
+    } catch (e) {
+      resolve({ ok: false, err: String(e) });
+    }
+  });
+}
+
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  (async () => {
+    if (message?.type === "native") {
+      const r = await sendNative(message.msg);
+      sendResponse(r);
+    } else if (message?.type === "reload_if_active") {
+      // Broadcast to every tab; each content script reloads only if focused
+      const tabs = await chrome.tabs.query({});
+      for (const t of tabs) {
+        try { chrome.tabs.sendMessage(t.id, { type: "reload_if_active" }); } catch {}
       }
-    });
-    return true;
-  }
+      sendResponse({ ok: true });
+    } else {
+      sendResponse({ ok: false, err: "unknown_message" });
+    }
+  })();
+  return true; // async response
 });
