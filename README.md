@@ -1,5 +1,15 @@
 # Naviglio
 
+<p align="center">
+  <img src="assets/banner.png" alt="Naviglio Banner" width="440" height="280"/>
+</p>
+
+<p align="center">
+  <b>Designed for your family</b><br>
+  <b>Free forever</b><br>
+  <b>Zero privacy risks</b>
+</p>
+
 **Parental Control for Chrome and Edge**  
 Developed by **Federico Bicocchi**  
 Version: **0.5.0**  
@@ -31,13 +41,3 @@ You can test it locally in **Developer Mode**:
 1. Clone this repository or download it as ZIP:  
    ```bash
    git clone https://github.com/kennethbicocchi/Naviglio-.git
-
-2. Open Chrome and go to chrome://extensions/
-
-3. Enable Developer mode (top right switch)
-
-4. Click Load unpacked
-
-5. Select the extension/ folder from this repo
-
-6. Default Password "Naviglio"
