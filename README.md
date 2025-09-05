@@ -4,12 +4,6 @@
   <img src="naviglio_banner_eng.png" alt="Naviglio Banner" width="440" height="280"/>
 </p>
 
-<p align="center">
-  <b>Designed for your family</b><br>
-  <b>Free forever</b><br>
-  <b>Zero privacy risks</b>
-</p>
-
 **Parental Control for Chrome and Edge**  
 Developed by **Federico Bicocchi**  
 Version: **0.5.0**  
