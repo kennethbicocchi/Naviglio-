@@ -5,7 +5,7 @@
 </p>
 
 **Parental Control for Chrome and Edge**  
-Developed by **Federico Bicocchi**
+Developed by **Federico Bicocchi** </br>
 Mascotte Design by **Nicole Durì**
 Version: **0.5.0**  
 License: MIT (free and open source)
