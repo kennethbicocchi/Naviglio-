@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "Naviglio",
+  "version": "0.5.0",
+  "description": "Parental control: blocca domini e richiede una password per sbloccarli temporaneamente.",
+  "icons": {
+    "128": "icon-128.png"
+  },
+
+  "permissions": [
+    "nativeMessaging"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+
+  "background": {
+    "service_worker": "bg.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "interstitial.html",
+        "interstitial.js",
+        "interstitial.css",
+        "icon-128.png"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "action": {
+    "default_title": "Naviglio",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html"
+}
