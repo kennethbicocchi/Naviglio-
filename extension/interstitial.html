@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AegisBlock - Sblocco</title>
+  <link rel="stylesheet" href="interstitial.css">
+</head>
+<body>
+  <div class="card">
+    <img src="icon-128.png" alt="logo" class="logo">
+    <h1>Accesso protetto</h1>
+    <p>Questo sito è bloccato. Inserisci la password per sbloccarlo temporaneamente.</p>
+    <form id="unlockForm">
+      <label>Password</label>
+      <input type="password" id="pwd" autocomplete="current-password" required>
+      <label>Durata sblocco</label>
+      <select id="minutes">
+        <option value="15">15 minuti</option>
+        <option value="30">30 minuti</option>
+        <option value="60">60 minuti</option>
+      </select>
+      <button type="submit">Sblocca</button>
+      <button type="button" id="cancelBtn">Annulla</button>
+    </form>
+    <p id="msg" class="msg"></p>
+  </div>
+  <script src="interstitial.js"></script>
+</body>
+</html>
