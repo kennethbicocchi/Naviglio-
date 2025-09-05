@@ -31,3 +31,11 @@ You can test it locally in **Developer Mode**:
 1. Clone this repository or download it as ZIP:  
    ```bash
    git clone https://github.com/kennethbicocchi/Naviglio-.git
+
+2. Open Chrome and go to chrome://extensions/
+
+3. Enable Developer mode (top right switch)
+
+4. Click Load unpacked
+
+5. Select the extension/ folder from this repo
