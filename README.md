@@ -1,7 +1,7 @@
 # Naviglio
 
 <p align="center">
-  <img src="naviglio_banner_eng.png" alt="Naviglio Banner" width="440" height="280"/>
+  <img src="naviglio_banner2_eng.png" alt="Naviglio Banner" width="1400" height="560"/>
 </p>
 
 **Parental Control for Chrome and Edge**  
@@ -21,6 +21,10 @@ When a blocked site is accessed, the extension asks for a password to temporaril
 - ✅ Completely free to use  
 
 ---
+
+<p align="center">
+  <img src="naviglio_banner_eng.png" alt="Naviglio Banner" width="440" height="280"/>
+</p>
 
 ## 📦 Installation
 
