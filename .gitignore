@@ -1,0 +1,17 @@
+﻿bin/
+obj/
+.vs/
+*.user
+*.suo
+
+*.zip
+*.7z
+*.rar
+*.exe
+*.msi
+*.e32
+
+.DS_Store
+Thumbs.db
+
+*.iss~
