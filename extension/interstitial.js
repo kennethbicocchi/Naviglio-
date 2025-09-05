@@ -1,95 +1,75 @@
-// DEBUG helper
-function dbg(...a){ try{ console.log("[Naviglio interstitial]", ...a); }catch{} }
-
-// proxy diretto al Native Host
-function nativeNM(msg) {
-  return new Promise((resolve) => {
-    try {
-      chrome.runtime.sendNativeMessage("com.naviglio.host", msg, (resp) => {
-        const err = chrome.runtime.lastError ? chrome.runtime.lastError.message : null;
-        if (err) dbg("native error:", err, msg);
+function nativeNM(msg){
+  return new Promise((resolve)=>{
+    try{
+      chrome.runtime.sendNativeMessage("com.naviglio.host", msg, (resp)=>{
+        const err = chrome.runtime.lastError?.message || null;
         resolve({ resp, err });
       });
-    } catch (e) {
-      dbg("native throw:", e);
-      resolve({ resp: null, err: String(e) });
-    }
+    }catch(e){ resolve({ resp:null, err:String(e) }); }
   });
 }
 
-function bestMatchDomain(host, blocked) {
-  return blocked.find(d => host === d || host.endsWith("." + d)) || null;
+function bestMatchDomain(host, list){
+  return list.find(d => host === d || host.endsWith("."+d)) || null;
 }
 
-async function waitUntilUnlocked(domain, maxTries = 12, delayMs = 120) {
-  for (let i = 0; i < maxTries; i++) {
-    const q = await nativeNM({ cmd: "get_unlock", domain });
+async function waitUntilUnlocked(domain, tries=15, delay=120){
+  for (let i=0;i<tries;i++){
+    const q = await nativeNM({ cmd:"get_unlock", domain });
     if (!q.err && q.resp && q.resp.active) return true;
-    await new Promise(r => setTimeout(r, delayMs));
+    await new Promise(r=>setTimeout(r,delay));
   }
   return false;
 }
 
-(async () => {
+(async ()=>{
   const params = new URLSearchParams(location.search);
   const target = params.get("target") || "about:blank";
 
-  const form = document.getElementById("unlockForm");
+  const formBtn = document.getElementById("btn");
+  const cancelBtn = document.getElementById("cancel");
   const pwd = document.getElementById("pwd");
   const minutesSel = document.getElementById("minutes");
   const msg = document.getElementById("msg");
-  const cancelBtn = document.getElementById("cancelBtn");
 
-  cancelBtn.addEventListener("click", () => {
-    msg.textContent = "Accesso negato.";
-    setTimeout(() => { history.back(); }, 800);
+  cancelBtn.addEventListener("click", ()=>{
+    msg.textContent = "Access denied.";
+    setTimeout(()=>history.back(), 600);
   });
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  formBtn.addEventListener("click", async ()=>{
     msg.textContent = "";
 
     const host = new URL(target).hostname;
 
-    // 1) verifica password
-    const check = await nativeNM({ cmd: "check_password", password: pwd.value });
-    dbg("check_password resp:", check);
-    if (check.err) { msg.textContent = "Host non raggiungibile: " + check.err; return; }
-    if (!check.resp || !check.resp.ok) { msg.textContent = "Password errata."; pwd.value = ""; pwd.focus(); return; }
+    const check = await nativeNM({ cmd:"check_password", password: pwd.value });
+    if (check.err){ msg.textContent = "Host not reachable: " + check.err; return; }
+    if (!check.resp?.ok){ msg.textContent = "Wrong password."; pwd.value = ""; pwd.focus(); return; }
 
-    // 2) leggi lista domini
-    const list = await nativeNM({ cmd: "get_blocked_domains" });
-    dbg("blocked list resp:", list);
-    if (list.err) { msg.textContent = "Errore lettura domini: " + list.err; return; }
+    const list = await nativeNM({ cmd:"get_blocked_domains" });
+    if (list.err){ msg.textContent = "Error reading domains: " + list.err; return; }
 
-    const blocked = (list.resp && Array.isArray(list.resp.domains)) ? list.resp.domains : [];
-    const matchedDomain = bestMatchDomain(host, blocked);
-    dbg("matched domain:", matchedDomain);
+    const blocked = Array.isArray(list.resp?.domains) ? list.resp.domains : [];
+    const matched = bestMatchDomain(host, blocked);
 
-    if (!matchedDomain) {
-      msg.textContent = "Dominio non in blacklist. Procedo…";
-      setTimeout(() => { location.href = target; }, 300);
+    if (!matched){
+      msg.textContent = "Domain not on the list. Continuing…";
+      setTimeout(()=>{ location.href = target; }, 250);
       return;
     }
 
-    // 3) concedi sblocco
     const minutes = parseInt(minutesSel.value, 10);
-    const grant = await nativeNM({ cmd: "grant_unlock", domain: matchedDomain, minutes });
-    dbg("grant_unlock resp:", grant);
-    if (grant.err || !(grant.resp && grant.resp.ok)) {
-      msg.textContent = "Errore sblocco: " + (grant.err || "risposta non valida");
+    const grant = await nativeNM({ cmd:"grant_unlock", domain: matched, minutes });
+    if (grant.err || !grant.resp?.ok){
+      msg.textContent = "Unlock error: " + (grant.err || "invalid response");
       return;
     }
 
-    // 4) attendi conferma sblocco
-    msg.textContent = "Sbloccato. Verifico accesso…";
-    const ok = await waitUntilUnlocked(matchedDomain, 15, 120);
-    if (!ok) {
-      msg.textContent = "Sblocco non confermato. Riprova.";
-      return;
-    }
+    msg.textContent = "Unlocked. Verifying…";
+    const ok = await waitUntilUnlocked(matched, 15, 120);
+    if (!ok){ msg.textContent = "Unlock not confirmed. Try again."; return; }
 
-    msg.textContent = "Sbloccato. Reindirizzamento…";
-    setTimeout(() => { location.href = target; }, 150);
+    msg.textContent = "Unlocked. Redirecting…";
+    setTimeout(()=>{ location.href = target; }, 150);
   });
 })();
