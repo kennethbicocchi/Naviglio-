@@ -1,41 +1,49 @@
 # Naviglio
 
-Parental control for Windows: block websites and require a password to temporarily unlock them.  
-Works with **Chrome** and **Edge** via Native Messaging.
+**Naviglio** is a lightweight parental-control helper for Windows that blocks configured domains and requires a password to temporarily unlock access.  
+It ships as a Chrome/Edge extension + a small Native Messaging Host for Windows.
 
 ## Features
-- Configurable blocked domain list (e.g., `instagram.com`, `tiktok.com`)
-- Password required to unlock a domain for X minutes
-- Elegant interstitial page shown before blocked sites load
-- Local persistence (no data sent to servers)
-- Optional **force-install policy** (no “Remove” button in extensions page, for managed environments)
+
+- Block specific domains across all Chromium-based browsers
+- Password-protected temporary unlock (e.g., 5/10/15 minutes)
+- Options page protected by the same password
+- Host-based safe storage (PBKDF2 + salt)
+- Optional enterprise-style “force install” to hide the **Remove** button
+- Minimal permissions (“nativeMessaging” only)
 
 ## How it works
-- The extension intercepts navigation requests.  
-- If the domain is blocked and not unlocked, the user is redirected to an **interstitial** that asks for the password.  
-- Password check, domain list, and unlocks are handled by a **.NET native host** via **Native Messaging**.  
-- All data stays local (`C:\ProgramData\Naviglio\config.json`).
 
-## Requirements
-- Windows 10/11 (x64)
-- Chrome 109+ / Edge 109+
-- .NET 9 only for building from source (not needed with the installer)
+1. The extension intercepts page loads (content script).
+2. If the hostname matches your blocklist and there is no active unlock, an interstitial requests the password.
+3. The extension talks to the Windows Native Host via Chrome Native Messaging.
+4. The host validates the password, records unlock duration, and serves the blocklist.
 
-## Installation (end-user)
-1. Download the installer from the **Releases** page.
-2. Run as **Administrator**.
-3. Open `chrome://extensions` (or `edge://extensions`) and install Naviglio (from the Web Store or package).
-4. Open **Options** in the extension:
-   - set your password (default: `Naviglio`, change it immediately)
-   - add domains to block
-5. Visit a blocked domain → interstitial will appear.
+## Repository layout
 
-### Anti-removal (optional)
-On managed PCs, you can enable the **forcelist policy** to remove the “Remove” button in `chrome://extensions`.  
-This is configured by the installer or via Group Policy (GPO).
+- `extension/` — Extension source code
+- `host/` — Native host sample source (C#) *(optional; can be a README if you don’t publish source yet)*
+- `installer/` — Inno Setup script (`NaviglioSetup.iss`)
+- `releases/` — Optional folder for packaged installer / binaries
 
-## Build from source
-### Native Host
-```powershell
-cd host\NaviglioHost
-dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+## Build & Install (quick)
+
+1. **Windows Host**
+   - Build `NaviglioHost.exe` (or use the packaged installer).
+   - Installer registers the native host at:
+     - `HKCU\Software\Google\Chrome\NativeMessagingHosts\com.naviglio.host`
+     - `HKCU\Software\Microsoft\Edge\NativeMessagingHosts\com.naviglio.host`
+   - The JSON manifest points to the installed `NaviglioHost.exe`.
+
+2. **Extension**
+   - Load unpacked from `extension/` during development.
+   - For Chrome Web Store, upload the zipped contents of `extension/` only.
+
+## Permissions
+
+Only:
+```json
+{
+  "permissions": ["nativeMessaging"],
+  "host_permissions": ["<all_urls>"]
+}
