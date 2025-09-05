@@ -1,22 +1,17 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>AegisBlock • Tools</title>
+  <title>Naviglio</title>
   <style>
-    body { font-family: system-ui, Segoe UI, Roboto, Arial; margin: 0; padding: 14px; width: 260px; background:#0b0e14; color:#e9eef5; }
-    h1 { margin: 0 0 8px; font-size: 16px; }
-    p { margin: 6px 0 12px; font-size: 12px; color: #b6c2d0; }
-    button { width: 100%; padding: 10px; border: 0; border-radius: 10px; background: #4f8cff; color: #fff; font-weight: 700; cursor: pointer; }
-    button.secondary { margin-top:8px; background:#2a3240; }
-    #msg { margin-top: 10px; min-height: 18px; text-align: center; font-size: 12px; }
+    body{font-family:system-ui,Segoe UI,Arial,sans-serif;margin:14px;color:#e7e7e7;background:#0f1115}
+    button{background:#3b82f6;color:#fff;border:0;border-radius:8px;padding:8px 12px;cursor:pointer}
+    #msg{margin-top:8px;font-size:12px}
   </style>
 </head>
 <body>
-  <h1>AegisBlock</h1>
-  <p>Strumenti veloci.</p>
-  <button id="clearBtn">Reset sblocchi (tutti i domini)</button>
-  <button id="reloadBtn" class="secondary">Ricarica scheda attiva</button>
+  <button id="clearBtn">Clear temporary unlocks</button>
+  <button id="reloadBtn" style="margin-left:8px">Reload active tab</button>
   <div id="msg"></div>
   <script src="popup.js"></script>
 </body>
