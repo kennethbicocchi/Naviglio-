@@ -39,3 +39,5 @@ You can test it locally in **Developer Mode**:
 4. Click Load unpacked
 
 5. Select the extension/ folder from this repo
+
+6. Default Password "Naviglio"
